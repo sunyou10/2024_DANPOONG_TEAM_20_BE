@@ -1,4 +1,4 @@
-package shop.kkeujeok.api;
+package com.example.mixmix.member.api;
 
 import com.example.mixmix.global.annotation.CurrentUserEmail;
 import com.example.mixmix.global.template.RspTemplate;
