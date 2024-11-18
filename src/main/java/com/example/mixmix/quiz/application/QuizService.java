@@ -1,4 +1,4 @@
-package net.skhu.quiz.application;
+package com.example.mixmix.quiz.application;
 
 import com.example.mixmix.ai.dto.AiResponseDto;
 import com.example.mixmix.member.domain.Member;

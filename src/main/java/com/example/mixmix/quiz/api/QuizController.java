@@ -1,4 +1,4 @@
-package net.skhu.quiz.api;
+package com.example.mixmix.quiz.api;
 
 import com.example.mixmix.ai.dto.AiResponseDto;
 import com.example.mixmix.global.annotation.CurrentUserEmail;
