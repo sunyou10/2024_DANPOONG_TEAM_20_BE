@@ -71,4 +71,30 @@ public class FeedController {
                 feedService.findAllByFeedType(keyword,
                         PageRequest.of(page, size)));
     }
+
+    @Operation(summary = "게시물(피드)을 수정", description = "게시물(피드)을 수정합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "ID 토큰 반환 성공"),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청 값"),
+            @ApiResponse(responseCode = "401", description = "헤더 없음 or 토큰 불일치",
+                    content = @Content(schema = @Schema(example = "INVALID_HEADER or INVALID_TOKEN")))
+    })
+    @PatchMapping("/{feedId}")
+    public RspTemplate<FeedInfoResDto> update(@PathVariable(name = "feedId") Long feedId,
+                                                  @RequestBody FeedSaveReqDto feedSaveReqDto) {
+        return new RspTemplate<>(HttpStatus.OK, "피드 수정", feedService.update(feedId, feedSaveReqDto));
+    }
+
+    @Operation(summary = "게시물(피드)을 삭제", description = "게시물(피드)을 삭제합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "ID 토큰 반환 성공"),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청 값"),
+            @ApiResponse(responseCode = "401", description = "헤더 없음 or 토큰 불일치",
+                    content = @Content(schema = @Schema(example = "INVALID_HEADER or INVALID_TOKEN")))
+    })
+    @PatchMapping("/delete/{feedId}")
+    public RspTemplate<Void> delete(@PathVariable(name = "feedId") Long feedId) {
+        feedService.delete(feedId);
+        return new RspTemplate<>(HttpStatus.OK, "피드 삭제");
+    }
 }

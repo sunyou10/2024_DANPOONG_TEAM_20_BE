@@ -51,4 +51,25 @@ public class FeedService {
                 feedInfoResDtos.getContent(),
                 PageInfoResDto.from(feedInfoResDtos));
     }
+
+    // 게시물 수정
+    @Transactional
+    public FeedInfoResDto update(Long feedId, FeedSaveReqDto feedSaveReqDto) {
+        Feed feed = feedRepository.findById(feedId).orElseThrow(FeedNotFoundException::new);
+
+        feed.update(feedSaveReqDto.title(),
+                feedSaveReqDto.contents(),
+                feedSaveReqDto.hashTags(),
+                feedSaveReqDto.feedImage());
+
+        return FeedInfoResDto.from(feed);
+    }
+
+    // 게시물 삭제
+    @Transactional
+    public void delete(Long feedId) {
+        Feed feed = feedRepository.findById(feedId).orElseThrow(FeedNotFoundException::new);
+
+        feed.delete();
+    }
 }
