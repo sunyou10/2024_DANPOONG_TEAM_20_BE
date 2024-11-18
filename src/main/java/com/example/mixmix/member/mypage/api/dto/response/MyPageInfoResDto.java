@@ -1,4 +1,4 @@
-package shop.kkeujeok.mypage.api.dto.response;
+package com.example.mixmix.member.mypage.api.dto.response;
 
 import com.example.mixmix.member.domain.Member;
 import lombok.Builder;

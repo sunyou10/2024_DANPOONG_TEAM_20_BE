@@ -1,4 +1,4 @@
-package com.example.mixmix.member.application;
+package com.example.mixmix.member.mypage.application;
 
 import com.example.mixmix.feed.domain.repository.FeedRepository;
 import com.example.mixmix.member.domain.Member;
