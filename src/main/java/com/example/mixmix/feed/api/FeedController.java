@@ -1,0 +1,46 @@
+package com.example.mixmix.feed.api;
+
+import com.example.mixmix.feed.api.dto.request.FeedSaveReqDto;
+import com.example.mixmix.feed.api.dto.response.FeedInfoResDto;
+import com.example.mixmix.feed.api.dto.response.FeedListResDto;
+import com.example.mixmix.feed.api.dto.response.FeedSaveInfoResDto;
+import com.example.mixmix.feed.application.FeedService;
+import com.example.mixmix.global.annotation.CurrentUserEmail;
+import com.example.mixmix.global.template.RspTemplate;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/api/feed")
+public class FeedController {
+
+    private final FeedService feedService;
+
+    @Operation(summary = "게시물(피드)을 생성합니다.", description = "게시물(피드)을 생성합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "ID 토큰 반환 성공"),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청 값"),
+            @ApiResponse(responseCode = "401", description = "헤더 없음 or 토큰 불일치",
+                    content = @Content(schema = @Schema(example = "INVALID_HEADER or INVALID_TOKEN")))
+    })
+    @PostMapping
+    public RspTemplate<FeedSaveInfoResDto> save(@CurrentUserEmail String email,
+                                                @RequestBody FeedSaveReqDto feedSaveReqDto) {
+        return new RspTemplate<>(HttpStatus.CREATED, "피드 생성", feedService.save(email, feedSaveReqDto));
+    }
+}
