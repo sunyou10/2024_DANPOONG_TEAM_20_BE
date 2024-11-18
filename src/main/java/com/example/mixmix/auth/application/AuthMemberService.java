@@ -9,6 +9,8 @@ import com.example.mixmix.member.domain.Member;
 import com.example.mixmix.member.domain.SocialType;
 import com.example.mixmix.member.domain.repository.MemberRepository;
 import java.util.Optional;
+
+import com.example.mixmix.ranking.application.RankingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class AuthMemberService {
 
     private final MemberRepository memberRepository;
+    private final RankingService rankingService;
 
     @Transactional
     public MemberLoginResDto saveUserInfo(UserInfo userInfo, SocialType provider) {
@@ -55,6 +58,7 @@ public class AuthMemberService {
                 .introduction("")
                 .build();
 
+        rankingService.createRanking(member);
         return memberRepository.save(member);
     }
 
