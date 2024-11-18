@@ -43,4 +43,32 @@ public class FeedController {
                                                 @RequestBody FeedSaveReqDto feedSaveReqDto) {
         return new RspTemplate<>(HttpStatus.CREATED, "피드 생성", feedService.save(email, feedSaveReqDto));
     }
+
+    @Operation(summary = "게시물(피드)을 개별 조회합니다.", description = "게시물(피드)을 개별 조회합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "ID 토큰 반환 성공"),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청 값"),
+            @ApiResponse(responseCode = "401", description = "헤더 없음 or 토큰 불일치",
+                    content = @Content(schema = @Schema(example = "INVALID_HEADER or INVALID_TOKEN")))
+    })
+    @GetMapping("/{feedId}")
+    public RspTemplate<FeedInfoResDto> getFeedDetail(@PathVariable(name = "feedId") Long feedId) {
+        return new RspTemplate<>(HttpStatus.OK, "피드 개별 조회", feedService.findById(feedId));
+    }
+
+    @Operation(summary = "게시물(피드)을 전체 조회합니다", description = "게시물(피드)을 전체 조회합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "ID 토큰 반환 성공"),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청 값"),
+            @ApiResponse(responseCode = "401", description = "헤더 없음 or 토큰 불일치",
+                    content = @Content(schema = @Schema(example = "INVALID_HEADER or INVALID_TOKEN")))
+    })
+    @GetMapping("/all")
+    public RspTemplate<FeedListResDto> getFeedList(@RequestParam(name = "keyword") String keyword,
+                                                   @RequestParam(name = "page", defaultValue = "0") int page,
+                                                   @RequestParam(name = "size", defaultValue = "10") int size) {
+        return new RspTemplate<>(HttpStatus.OK, "피드 soical/education 구분해서 전체 조회",
+                feedService.findAllByFeedType(keyword,
+                        PageRequest.of(page, size)));
+    }
 }

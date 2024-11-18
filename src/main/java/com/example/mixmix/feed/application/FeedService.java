@@ -35,4 +35,20 @@ public class FeedService {
 
         return FeedSaveInfoResDto.of(feed, member.getId());
     }
+
+    // 피드 개별 조회
+    public FeedInfoResDto findById(Long feedId) {
+        Feed feed = feedRepository.findById(feedId).orElseThrow(FeedNotFoundException::new);
+
+        return FeedInfoResDto.from(feed);
+    }
+
+    // 피드 soical/education 구분해서 전체 조회
+    public FeedListResDto findAllByFeedType(String keyword, Pageable pageable) {
+        Page<FeedInfoResDto> feedInfoResDtos = feedRepository.findAllByFeedType(keyword, pageable);
+
+        return FeedListResDto.of(
+                feedInfoResDtos.getContent(),
+                PageInfoResDto.from(feedInfoResDtos));
+    }
 }

@@ -19,4 +19,39 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class FeedCustomRepositoryImpl implements FeedCustomRepository {
 
+    private final JPAQueryFactory queryFactory;
+
+    @Override
+    public Page<FeedInfoResDto> findAllByFeedType(String keyword, Pageable pageable) {
+        QFeed feed = QFeed.feed;
+
+        FeedType feedType = FeedType.valueOf(keyword);
+
+        List<FeedInfoResDto> content = queryFactory
+                .select(Projections.constructor(
+                        FeedInfoResDto.class,
+                        feed.feedImage,
+                        feed.title,
+                        feed.contents,
+                        feed.hashTags,
+                        feed.feedType,
+                        feed.member.id
+                ))
+                .from(feed)
+                .where(
+                        feed.feedType.eq(feedType)
+                                .and(feed.status.eq(Status.valueOf("ACTIVE")))
+                )
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        long total = queryFactory
+                .select(feed.count())
+                .from(feed)
+                .where(feed.feedType.eq(feedType))
+                .fetchOne();
+
+        return PageableExecutionUtils.getPage(content, pageable, () -> total);
+    }
 }
