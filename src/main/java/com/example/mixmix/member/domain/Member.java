@@ -2,6 +2,7 @@ package com.example.mixmix.member.domain;
 
 import com.example.mixmix.global.entity.BaseEntity;
 import com.example.mixmix.global.entity.Status;
+import com.example.mixmix.ranking.domain.Ranking;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -42,6 +43,9 @@ public class Member extends BaseEntity {
     private Integer streak = 0;
 
     private LocalDateTime lastStreakUpdate;
+
+    @OneToOne(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Ranking ranking;
 
     @Enumerated(value = EnumType.STRING)
     private SolvedStatus hasSolved;
