@@ -6,4 +6,6 @@ import org.springframework.data.domain.Pageable;
 
 public interface FeedCustomRepository {
     Page<FeedInfoResDto> findAllByFeedType(String keyword, Pageable pageable);
+    long countEducationFeedsByMemberId(Long memberId);
+    long countSocialFeedsByMemberId(Long memberId);
 }

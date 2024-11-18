@@ -54,4 +54,34 @@ public class FeedCustomRepositoryImpl implements FeedCustomRepository {
 
         return PageableExecutionUtils.getPage(content, pageable, () -> total);
     }
+
+    @Override
+    public long countEducationFeedsByMemberId(Long memberId) {
+        QFeed feed = QFeed.feed;
+
+        return queryFactory
+                .select(feed.count())
+                .from(feed)
+                .where(
+                        feed.member.id.eq(memberId)
+                                .and(feed.feedType.eq(FeedType.EDUCATION))
+                                .and(feed.status.eq(com.example.mixmix.global.entity.Status.ACTIVE))
+                )
+                .fetchOne();
+    }
+
+    @Override
+    public long countSocialFeedsByMemberId(Long memberId) {
+        QFeed feed = QFeed.feed;
+
+        return queryFactory
+                .select(feed.count())
+                .from(feed)
+                .where(
+                        feed.member.id.eq(memberId)
+                                .and(feed.feedType.eq(FeedType.SOCIAL))
+                                .and(feed.status.eq(com.example.mixmix.global.entity.Status.ACTIVE))
+                )
+                .fetchOne();
+    }
 }
