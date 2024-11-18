@@ -1,4 +1,4 @@
-package shop.kkeujeok.application;
+package com.example.mixmix.member.application;
 
 import com.example.mixmix.member.api.dto.request.JoinMyPageUpdateReqDto;
 import com.example.mixmix.member.api.dto.response.JoinMyPageInfoResDto;
