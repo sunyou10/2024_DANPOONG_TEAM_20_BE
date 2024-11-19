@@ -6,6 +6,7 @@ import com.example.mixmix.chatting.application.ChatRoomService;
 import com.example.mixmix.global.annotation.CurrentUserEmail;
 import com.example.mixmix.global.template.RspTemplate;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,5 +24,14 @@ public class ChatRoomController {
         ChatRoomResDto chatRoomResDto = chatRoomService.createChatRoom(email, request);
 
         return new RspTemplate<>(HttpStatus.CREATED, "채팅방 생성", chatRoomResDto);
+    }
+
+    @GetMapping
+    public RspTemplate<?> getChatRooms(
+            @CurrentUserEmail String email,
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "10") int size) {
+        return new RspTemplate<>(HttpStatus.OK, "내 채팅방 조회",
+                chatRoomService.getChatRooms(email, PageRequest.of(page, size)));
     }
 }
