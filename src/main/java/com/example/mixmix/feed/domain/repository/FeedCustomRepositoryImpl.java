@@ -4,6 +4,7 @@ import com.example.mixmix.feed.api.dto.response.FeedInfoResDto;
 import com.example.mixmix.feed.domain.FeedType;
 import com.example.mixmix.feed.domain.QFeed;
 import com.example.mixmix.global.entity.Status;
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
@@ -22,10 +23,18 @@ public class FeedCustomRepositoryImpl implements FeedCustomRepository {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Page<FeedInfoResDto> findAllByFeedType(String keyword, Pageable pageable) {
+    public Page<FeedInfoResDto> findAllByFeedType(String keyword, String nationality, Pageable pageable) {
         QFeed feed = QFeed.feed;
 
         FeedType feedType = FeedType.valueOf(keyword);
+
+        BooleanBuilder condition = new BooleanBuilder();
+        condition.and(feed.feedType.eq(feedType))
+                .and(feed.status.eq(Status.ACTIVE));
+
+        if (nationality != null && !nationality.isEmpty()) {
+            condition.and(feed.member.nationality.eq(nationality));
+        }
 
         List<FeedInfoResDto> content = queryFactory
                 .select(Projections.constructor(
@@ -39,10 +48,7 @@ public class FeedCustomRepositoryImpl implements FeedCustomRepository {
                         feed.id
                 ))
                 .from(feed)
-                .where(
-                        feed.feedType.eq(feedType)
-                                .and(feed.status.eq(Status.valueOf("ACTIVE")))
-                )
+                .where(condition)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -50,11 +56,12 @@ public class FeedCustomRepositoryImpl implements FeedCustomRepository {
         long total = queryFactory
                 .select(feed.count())
                 .from(feed)
-                .where(feed.feedType.eq(feedType))
+                .where(condition)
                 .fetchOne();
 
         return PageableExecutionUtils.getPage(content, pageable, () -> total);
     }
+
 
     @Override
     public long countStudyFeedsByMemberId(Long memberId) {

@@ -43,9 +43,9 @@ public class FeedService {
         return FeedInfoResDto.from(feed);
     }
 
-    // 피드 soical/education 구분해서 전체 조회
-    public FeedListResDto findAllByFeedType(String keyword, Pageable pageable) {
-        Page<FeedInfoResDto> feedInfoResDtos = feedRepository.findAllByFeedType(keyword, pageable);
+    // 피드 social/study 구분해서 전체 조회
+    public FeedListResDto findAllByFeedType(String keyword, String nationality, Pageable pageable) {
+        Page<FeedInfoResDto> feedInfoResDtos = feedRepository.findAllByFeedType(keyword, nationality, pageable);
 
         return FeedListResDto.of(
                 feedInfoResDtos.getContent(),
