@@ -41,7 +41,8 @@ public class ChatRoomService {
         return ChatRoomResDto.from(savedChatRoom.getId(),
                 savedChatRoom.getRoomName(),
                 frommember.getId(),
-                toMember.getId());
+                toMember.getId(),
+                frommember.getName());
     }
 
     public ChatRoomResList getChatRooms(String email, Pageable pageable) {
@@ -56,6 +57,7 @@ public class ChatRoomService {
                         .name(chatRoom.getRoomName())
                         .fromMemberId(chatRoom.getFromMember().getId())
                         .toMemberId(chatRoom.getToMember().getId())
+                        .loginUserName(chatRoom.getFromMember().getName())
                         .build()
                 )
                 .toList();
