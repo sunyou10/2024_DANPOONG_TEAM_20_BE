@@ -19,16 +19,21 @@ public class ChatRoom {
 
     private String roomName;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id", nullable = false)
-    private Member member;
+    @ManyToOne
+    @JoinColumn(name = "from_member")
+    private Member fromMember;
+
+    @ManyToOne
+    @JoinColumn(name = "to_member")
+    private Member toMember;
 
     @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ChatMessage> messages = new ArrayList<>();
 
     @Builder
-    public ChatRoom(String name, Member member) {
+    public ChatRoom(String name, Member fromMember, Member toMember) {
         this.roomName = name;
-        this.member = member;
+        this.fromMember = fromMember;
+        this.toMember = toMember;
     }
 }

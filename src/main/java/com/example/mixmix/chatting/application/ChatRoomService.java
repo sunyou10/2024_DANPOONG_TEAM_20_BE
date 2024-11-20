@@ -25,17 +25,23 @@ public class ChatRoomService {
 
     @Transactional
     public ChatRoomResDto createChatRoom(String email, ChatRoomReqDto chatRoomReqDto) {
-        Member member = memberRepository.findByEmail(email)
+        Member frommember = memberRepository.findByEmail(email)
+                .orElseThrow(MemberNotFoundException::new);
+        Member toMember = memberRepository.findById(chatRoomReqDto.toMemberId())
                 .orElseThrow(MemberNotFoundException::new);
 
         ChatRoom chatRoom = ChatRoom.builder()
                 .name(chatRoomReqDto.roomName())
-                .member(member)
+                .fromMember(frommember)
+                .toMember(toMember)
                 .build();
 
         ChatRoom savedChatRoom = chatRoomRepository.save(chatRoom);
 
-        return new ChatRoomResDto(savedChatRoom.getId(), savedChatRoom.getRoomName(), member.getId());
+        return ChatRoomResDto.from(savedChatRoom.getId(),
+                savedChatRoom.getRoomName(),
+                frommember.getId(),
+                toMember.getId());
     }
 
     public ChatRoomResList getChatRooms(String email, Pageable pageable) {
@@ -44,14 +50,15 @@ public class ChatRoomService {
                 .orElseThrow(MemberNotFoundException::new);
 
         // 멤버와 연결된 채팅방 조회 (페이지 정보 포함)
-        Page<ChatRoom> chatRoomPage = chatRoomRepository.findByMember(member, pageable);
+        Page<ChatRoom> chatRoomPage = chatRoomRepository.findChatRoomsByMember(member, pageable);
 
         // ChatRoom -> ChatRoomResDto로 변환
         List<ChatRoomResDto> chatRoomResDtos = chatRoomPage.getContent().stream()
                 .map(chatRoom -> ChatRoomResDto.builder()
-                        .id(chatRoom.getId())
+                        .roomId(chatRoom.getId())
                         .name(chatRoom.getRoomName())
-                        .memberId(chatRoom.getMember().getId())
+                        .fromMemberId(chatRoom.getFromMember().getId())
+                        .toMemberId(chatRoom.getToMember().getId())
                         .build()
                 )
                 .toList();
