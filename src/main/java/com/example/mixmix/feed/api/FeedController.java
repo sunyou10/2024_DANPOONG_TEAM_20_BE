@@ -65,10 +65,12 @@ public class FeedController {
     })
     @GetMapping("/all")
     public RspTemplate<FeedListResDto> getFeedList(@RequestParam(name = "keyword") String keyword,
+                                                   @RequestParam(name = "nationality") String nationality,
                                                    @RequestParam(name = "page", defaultValue = "0") int page,
                                                    @RequestParam(name = "size", defaultValue = "10") int size) {
         return new RspTemplate<>(HttpStatus.OK, "피드 soical/education 구분해서 전체 조회",
                 feedService.findAllByFeedType(keyword,
+                        nationality,
                         PageRequest.of(page, size)));
     }
 
