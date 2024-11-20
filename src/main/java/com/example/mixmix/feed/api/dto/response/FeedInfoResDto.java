@@ -11,7 +11,8 @@ public record FeedInfoResDto(
         String contents,
         String hashTags,
         FeedType feedType,
-        Long memberId
+        Long memberId,
+        Long feedId
 ) {
     public static FeedInfoResDto from(Feed feed) {
         return FeedInfoResDto.builder()
@@ -21,6 +22,7 @@ public record FeedInfoResDto(
                 .hashTags(feed.getHashTags())
                 .feedType(feed.getFeedType())
                 .memberId(feed.getMember().getId())
+                .feedId(feed.getId())
                 .build();
     }
 }

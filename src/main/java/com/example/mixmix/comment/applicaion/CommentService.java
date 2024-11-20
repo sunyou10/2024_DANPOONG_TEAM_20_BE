@@ -44,6 +44,7 @@ public class CommentService {
 
         List<CommentInfoResDto> commentInfoResDtos = commentPage.getContent().stream()
                 .map(comment -> CommentInfoResDto.builder()
+                        .CommentWriterId(comment.getMember().getId())
                         .contents(comment.getContents())
                         .nickname(comment.getMember().getNickname())
                         .nationality(comment.getMember().getNationality())
