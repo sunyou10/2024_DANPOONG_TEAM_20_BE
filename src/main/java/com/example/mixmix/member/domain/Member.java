@@ -42,6 +42,8 @@ public class Member extends BaseEntity {
 
     private Integer streak = 0;
 
+    private boolean isStreakUpdated = false;
+
     private LocalDateTime lastStreakUpdate;
 
     @OneToOne(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -89,6 +91,7 @@ public class Member extends BaseEntity {
         if (this.lastStreakUpdate == null || !this.lastStreakUpdate.toLocalDate().isEqual(now.toLocalDate())) {
             this.streak++;
             this.lastStreakUpdate = now;
+            this.isStreakUpdated = true;
         }
     }
 }

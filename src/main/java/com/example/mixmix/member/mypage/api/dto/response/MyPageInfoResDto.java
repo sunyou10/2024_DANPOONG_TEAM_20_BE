@@ -1,6 +1,7 @@
 package com.example.mixmix.member.mypage.api.dto.response;
 
 import com.example.mixmix.member.domain.Member;
+import java.time.LocalDateTime;
 import lombok.Builder;
 
 @Builder
@@ -14,7 +15,10 @@ public record MyPageInfoResDto(
         String streak,
         Integer streakRank,
         long educationCount,
-        long socialCount
+        long socialCount,
+        LocalDateTime lastStreakUpdate,
+        boolean isStreakUpdated
+
 ) {
     public static MyPageInfoResDto from(Member member, long educationCount, long socialCount) {
         return MyPageInfoResDto.builder()
@@ -28,6 +32,8 @@ public record MyPageInfoResDto(
                 .streakRank(member.getRanking().getStreakRank())
                 .educationCount(educationCount)
                 .socialCount(socialCount)
+                .lastStreakUpdate(member.getLastStreakUpdate())
+                .isStreakUpdated(member.isStreakUpdated())
                 .build();
     }
 }
