@@ -13,6 +13,8 @@ import com.example.mixmix.member.domain.Member;
 import com.example.mixmix.member.domain.repository.MemberRepository;
 import com.example.mixmix.member.exception.MemberNotFoundException;
 import java.util.List;
+import com.example.mixmix.notification.application.NotificationService;
+import com.example.mixmix.notification.domain.Type;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -27,6 +29,9 @@ public class CommentService {
     private final MemberRepository memberRepository;
     private final CommentRepository commentRepository;
     private final FeedRepository feedRepository;
+    private final NotificationService notificationService;
+
+    private static final String COMMENT_NOTIFICATION_MESSAGE = "%s님이 회원님의 게시물에 댓글을 남겼습니다.";
 
     @Transactional
     public CommentInfoResDto save(String email, CommentSaveReqDto commentSaveReqDto) {
@@ -35,6 +40,11 @@ public class CommentService {
                 .orElseThrow(FeedNotFoundException::new);
 
         Comment comment = commentRepository.save(commentSaveReqDto.toEntity(member, feed));
+
+        if (member != feed.getMember()) {
+            String commentCreateMessage = String.format(COMMENT_NOTIFICATION_MESSAGE, member.getNickname());
+            notificationService.sendNotification(feed.getMember(), Type.COMMENT, commentCreateMessage, feed.getId());
+        }
 
         return CommentInfoResDto.from(comment, member);
     }
