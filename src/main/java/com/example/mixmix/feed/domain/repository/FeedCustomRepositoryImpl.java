@@ -57,7 +57,7 @@ public class FeedCustomRepositoryImpl implements FeedCustomRepository {
     }
 
     @Override
-    public long countEducationFeedsByMemberId(Long memberId) {
+    public long countStudyFeedsByMemberId(Long memberId) {
         QFeed feed = QFeed.feed;
 
         return queryFactory
@@ -65,7 +65,7 @@ public class FeedCustomRepositoryImpl implements FeedCustomRepository {
                 .from(feed)
                 .where(
                         feed.member.id.eq(memberId)
-                                .and(feed.feedType.eq(FeedType.EDUCATION))
+                                .and(feed.feedType.eq(FeedType.STUDY))
                                 .and(feed.status.eq(com.example.mixmix.global.entity.Status.ACTIVE))
                 )
                 .fetchOne();
