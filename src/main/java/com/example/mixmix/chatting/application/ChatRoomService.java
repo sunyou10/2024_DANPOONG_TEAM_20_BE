@@ -45,14 +45,11 @@ public class ChatRoomService {
     }
 
     public ChatRoomResList getChatRooms(String email, Pageable pageable) {
-        // 이메일로 멤버 조회
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(MemberNotFoundException::new);
 
-        // 멤버와 연결된 채팅방 조회 (페이지 정보 포함)
         Page<ChatRoom> chatRoomPage = chatRoomRepository.findChatRoomsByMember(member, pageable);
 
-        // ChatRoom -> ChatRoomResDto로 변환
         List<ChatRoomResDto> chatRoomResDtos = chatRoomPage.getContent().stream()
                 .map(chatRoom -> ChatRoomResDto.builder()
                         .roomId(chatRoom.getId())
@@ -63,15 +60,12 @@ public class ChatRoomService {
                 )
                 .toList();
 
-        // 페이지 정보 생성
         PageInfoResDto pageInfoResDto = PageInfoResDto.builder()
                 .totalPages(chatRoomPage.getTotalPages())
                 .totalItems(chatRoomPage.getTotalElements())
                 .currentPage(chatRoomPage.getNumber())
                 .build();
 
-        // ChatRoomList 생성 및 반환
         return ChatRoomResList.of(chatRoomResDtos, pageInfoResDto);
     }
-
 }
