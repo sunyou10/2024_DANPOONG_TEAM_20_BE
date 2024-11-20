@@ -101,7 +101,8 @@ public class NotificationService {
     public void sendStreakNotification() {
         List<Member> members = memberRepository.findAllByIsStreakUpdatedFalse();
         for (Member member : members) {
-            saveNotification(member, Type.STREAK, STREAK_NOTIFICATION_MESSAGE, member.getId());
+            Notification savedNotification = saveNotification(member, Type.STREAK, STREAK_NOTIFICATION_MESSAGE, member.getId());
+            sseEmitterManager.sendNotification(member.getId(), createPayload(savedNotification));
         }
     }
 
