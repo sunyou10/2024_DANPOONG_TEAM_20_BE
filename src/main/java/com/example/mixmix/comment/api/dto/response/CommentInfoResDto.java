@@ -7,6 +7,7 @@ import lombok.Builder;
 
 @Builder
 public record CommentInfoResDto(
+        Long CommentWriterId,
         String contents,
         String nickname,
         String picture,
@@ -15,6 +16,7 @@ public record CommentInfoResDto(
 ) {
     public static CommentInfoResDto from(Comment comment, Member member) {
         return CommentInfoResDto.builder()
+                .CommentWriterId(member.getId())
                 .contents(comment.getContents())
                 .nickname(member.getNickname())
                 .picture(member.getPicture())
