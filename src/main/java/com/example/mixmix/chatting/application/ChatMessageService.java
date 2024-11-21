@@ -33,6 +33,8 @@ public class ChatMessageService {
         chatMessage.setContent(content);
         chatMessage.setTimestamp(LocalDateTime.now());
 
+
+
         chatMessageRepository.save(chatMessage);
     }
 
