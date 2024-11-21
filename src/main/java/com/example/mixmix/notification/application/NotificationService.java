@@ -57,6 +57,7 @@ public class NotificationService {
         Member member = findByEmail(email);
         List<? extends NotificationInfoResDto> notifications = notificationRepository.findAllByReceiver(member)
                 .stream()
+                .filter(notification -> notification.getType() != Type.CHAT)
                 .map(notification -> {
                     if(notification.getType() == Type.COMMENT) {
                         return createComment(notification);
