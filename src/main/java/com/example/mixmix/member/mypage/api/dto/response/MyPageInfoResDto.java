@@ -14,13 +14,13 @@ public record MyPageInfoResDto(
         String name,
         String streak,
         Integer streakRank,
-        long educationCount,
+        long studyCount,
         long socialCount,
         LocalDateTime lastStreakUpdate,
         boolean isStreakUpdated,
         boolean unreadNotifiication
 ) {
-    public static MyPageInfoResDto from(Member member, long educationCount, long socialCount, boolean unreadNotifiication) {
+    public static MyPageInfoResDto from(Member member, long studyCount, long socialCount, boolean unreadNotifiication) {
         return MyPageInfoResDto.builder()
                 .introduction(member.getIntroduction())
                 .nationality(member.getNationality())
@@ -30,7 +30,7 @@ public record MyPageInfoResDto(
                 .name(member.getName())
                 .streak(String.valueOf(member.getStreak()))
                 .streakRank(member.getRanking().getStreakRank())
-                .educationCount(educationCount)
+                .studyCount(studyCount)
                 .socialCount(socialCount)
                 .lastStreakUpdate(member.getLastStreakUpdate())
                 .isStreakUpdated(member.isStreakUpdated())
