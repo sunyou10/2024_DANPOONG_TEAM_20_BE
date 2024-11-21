@@ -57,7 +57,7 @@ public class ChatRoomService {
                         .name(chatRoom.getRoomName())
                         .fromMemberId(chatRoom.getFromMember().getId())
                         .toMemberId(chatRoom.getToMember().getId())
-                        .loginUserName(chatRoom.getFromMember().getName())
+                        .loginUserName(member.getName())
                         .build()
                 )
                 .toList();
