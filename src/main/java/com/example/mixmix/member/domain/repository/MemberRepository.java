@@ -15,7 +15,7 @@ public interface MemberRepository extends
         JpaSpecificationExecutor<Member>,
         MemberCustomRepository {
     Optional<Member> findByEmail(String email);
-    boolean existsByNickname(String nickname);
+
     @Transactional
     @Modifying
     @Query("UPDATE Member m SET m.isStreakUpdated = false WHERE m.lastStreakUpdate < :yesterday")
