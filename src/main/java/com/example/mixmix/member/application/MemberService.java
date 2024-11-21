@@ -24,7 +24,7 @@ public class MemberService {
     public JoinMyPageInfoResDto joinRequest(String email, JoinMyPageUpdateReqDto joinMyPageUpdateReqDto) {
         Member member = memberRepository.findByEmail(email).orElseThrow(MemberNotFoundException::new);
 
-        if (isNicknameDuplicate(joinMyPageUpdateReqDto.nickname())) {
+        if (isNicknameDuplicate(joinMyPageUpdateReqDto.nickname(), member.getId())) {
             throw new ExistsNicknameException();
         }
 
@@ -37,8 +37,8 @@ public class MemberService {
         return JoinMyPageInfoResDto.from(member);
     }
 
-    private boolean isNicknameDuplicate(String nickname) {
-        return memberRepository.existsByNickname(normalizeNickname(nickname));
+    private boolean isNicknameDuplicate(String nickname, Long memberId) {
+        return memberRepository.existsByNicknameAndNotId(normalizeNickname(nickname), memberId);
     }
 
     private String normalizeNickname(String nickname) {
