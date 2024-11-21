@@ -2,6 +2,7 @@ package com.example.mixmix.quiz.api;
 
 import com.example.mixmix.ai.dto.AiResponseDto;
 import com.example.mixmix.global.annotation.CurrentUserEmail;
+import com.example.mixmix.quiz.api.dto.response.QuizDto;
 import com.example.mixmix.quiz.application.QuizService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -32,7 +33,7 @@ public class QuizController {
                     content = @Content(schema = @Schema(example = "INVALID_HEADER or INVALID_TOKEN")))
     })
     @PostMapping
-    public ResponseEntity<AiResponseDto> advice(@CurrentUserEmail String email) {
+    public ResponseEntity<QuizDto> advice(@CurrentUserEmail String email) {
         return new ResponseEntity<>(quizService.askForAdvice(email), HttpStatus.OK);
     }
 

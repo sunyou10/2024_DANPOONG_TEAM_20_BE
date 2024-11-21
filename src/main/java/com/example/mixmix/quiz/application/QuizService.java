@@ -4,6 +4,7 @@ import com.example.mixmix.ai.dto.AiResponseDto;
 import com.example.mixmix.member.domain.Member;
 import com.example.mixmix.member.domain.repository.MemberRepository;
 import com.example.mixmix.member.exception.MemberNotFoundException;
+import com.example.mixmix.quiz.api.dto.response.QuizDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.ai.chat.ChatClient;
 import org.springframework.ai.chat.ChatResponse;
@@ -27,7 +28,7 @@ public class QuizService {
     private String globalQuestions;
 
     @Transactional
-    public AiResponseDto askForAdvice(String email) {
+    public QuizDto askForAdvice(String email) {
         Member member = memberRepository.findByEmail(email).orElseThrow(MemberNotFoundException::new);
 
         String selectedQuestions = member.getNationality().equalsIgnoreCase("korea") ? koreaQuestions : globalQuestions;
@@ -37,8 +38,7 @@ public class QuizService {
             response = callChat(selectedQuestions);
         }
 
-        return AiResponseDto.builder()
-                .answer(response.getResult().getOutput().getContent()).build();
+        return parseQuiz(response.getResult().getOutput().getContent());
     }
 
     private ChatResponse callChat(String prompt) {
@@ -51,6 +51,22 @@ public class QuizService {
                                 .withModel("gpt-4o")
                                 .build()
                 ));
+    }
+
+    private QuizDto parseQuiz(String quizText) {
+        // 문자열을 줄바꿈으로 분리
+        String[] lines = quizText.split("\n");
+
+        // 문제, 선택지, 정답을 파싱
+        String question = lines[0].replace("문제: ", "").trim();
+        String option1 = lines[2].replace("1. ", "").trim();
+        String option2 = lines[3].replace("2. ", "").trim();
+        String option3 = lines[4].replace("3. ", "").trim();
+        String option4 = lines[5].replace("4. ", "").trim();
+        String answer = lines[6].replace("정답: ", "").trim();
+
+        // DTO 생성 및 반환
+        return QuizDto.of(question, option1, option2, option3, option4, answer);
     }
 
     @Transactional
