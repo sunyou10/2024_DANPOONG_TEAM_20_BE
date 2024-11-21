@@ -2,6 +2,7 @@ package com.example.mixmix.chatting.api;
 
 import com.example.mixmix.chatting.api.dto.request.ChatRoomReqDto;
 import com.example.mixmix.chatting.api.dto.response.ChatRoomResDto;
+import com.example.mixmix.chatting.api.dto.response.ChatRoomResList;
 import com.example.mixmix.chatting.application.ChatRoomService;
 import com.example.mixmix.global.annotation.CurrentUserEmail;
 import com.example.mixmix.global.template.RspTemplate;
@@ -27,7 +28,7 @@ public class ChatRoomController {
     }
 
     @GetMapping
-    public RspTemplate<?> getChatRooms(
+    public RspTemplate<ChatRoomResList> getChatRooms(
             @CurrentUserEmail String email,
             @RequestParam(name = "page", defaultValue = "0") int page,
             @RequestParam(name = "size", defaultValue = "10") int size) {
