@@ -34,11 +34,11 @@ public class Member extends BaseEntity {
     @Enumerated(value = EnumType.STRING)
     private SocialType socialType;
 
-    private String introduction;
+    private String introduction = "";
 
-    private String nationality;
+    private String nationality= "";
 
-    private String school;
+    private String school= "";
 
     private Integer streak = 0;
 

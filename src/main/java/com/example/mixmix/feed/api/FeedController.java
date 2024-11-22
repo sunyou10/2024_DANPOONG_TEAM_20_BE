@@ -48,7 +48,7 @@ public class FeedController {
     @PostMapping
     public RspTemplate<FeedSaveInfoResDto> save(@CurrentUserEmail String email,
                                                 @RequestPart("feedSaveReqDto") String feedSaveReqDtoJson,
-                                                @RequestPart("feedImage") List<MultipartFile> feedImage) {
+                                                @RequestPart(value = "feedImage") List<MultipartFile> feedImage) {
         List<String> imageUrls = awsS3Service.uploadFile(feedImage);
         ObjectMapper objectMapper = new ObjectMapper();
         FeedSaveReqDto feedSaveReqDto;
