@@ -45,7 +45,8 @@ public class FeedCustomRepositoryImpl implements FeedCustomRepository {
                         feed.hashTags,
                         feed.feedType,
                         feed.member.id,
-                        feed.id
+                        feed.id,
+                        feed.createdAt
                 ))
                 .from(feed)
                 .where(condition)
