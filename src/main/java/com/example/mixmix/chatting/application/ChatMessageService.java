@@ -38,15 +38,15 @@ public class ChatMessageService {
         chatMessage.setContent(content);
         chatMessage.setTimestamp(LocalDateTime.now());
 
+        ChatMessage savedChatMessage = chatMessageRepository.save(chatMessage);
+
         Member member;
         if (!chatRoom.getFromMember().getName().equals(sender)) {
             member = chatRoom.getFromMember();
         } else {
             member = chatRoom.getToMember();
         }
-        notificationService.sendNotification(member, Type.CHAT, CHAT_NOTIFICATION_MESSAGE, chatMessage.getId());
-
-        chatMessageRepository.save(chatMessage);
+        notificationService.sendNotification(member, Type.CHAT, CHAT_NOTIFICATION_MESSAGE, savedChatMessage.getId());
     }
 
     public ChatMessageResList findChatMessages(Long roomId, Pageable pageable) {
