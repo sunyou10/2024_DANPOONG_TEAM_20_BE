@@ -21,6 +21,6 @@ public interface NotificationRepository extends JpaRepository<Notification, Long
     Integer countUnreadChatNotifications(Member receiver, ChatRoom chatRoom);
 
     @Query("SELECT n FROM Notification n " +
-            "where n.type = 'CHAT' and n.relatedEntityId = :messageId and n.isRead = false")
-    Optional<Notification> findUnreadChatNotification(Long messageId);
+            "where n.type = 'CHAT' and n.receiver = :receiver and n.relatedEntityId = :messageId and n.isRead = false")
+    Optional<Notification> findUnreadChatNotification(Member receiver, Long messageId);
 }

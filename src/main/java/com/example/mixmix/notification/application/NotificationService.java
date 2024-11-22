@@ -1,7 +1,10 @@
 package com.example.mixmix.notification.application;
 
 import com.example.mixmix.chatting.domain.ChatMessage;
+import com.example.mixmix.chatting.domain.ChatRoom;
 import com.example.mixmix.chatting.domain.repository.ChatMessageRepository;
+import com.example.mixmix.chatting.domain.repository.ChatRoomRepository;
+import com.example.mixmix.chatting.exception.ExistsChatRoomException;
 import com.example.mixmix.feed.domain.Feed;
 import com.example.mixmix.feed.domain.repository.FeedRepository;
 import com.example.mixmix.feed.exception.FeedNotFoundException;
@@ -18,7 +21,7 @@ import com.example.mixmix.notification.domain.repository.NotificationRepository;
 import com.example.mixmix.notification.util.NotificationPayload;
 import com.example.mixmix.notification.util.SseEmitterManager;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,6 +37,7 @@ public class NotificationService {
     private final NotificationRepository notificationRepository;
     private final MemberRepository memberRepository;
     private final FeedRepository feedRepository;
+    private final ChatRoomRepository chatRoomRepository;
     private final ChatMessageRepository chatMessageRepository;
     private final SseEmitterManager sseEmitterManager;
 
@@ -105,13 +109,16 @@ public class NotificationService {
     }
 
     @Transactional
-    public void markAllChatRead(Page<ChatMessage> chatMessages) {
-        List<Long> messageIds = chatMessages.getContent().stream()
-                .map(ChatMessage::getId)
-                .toList();
+    public void markChatRead(String email, Long roomId, Pageable pageable) {
+        Member member = findByEmail(email);
+        ChatRoom chatRoom = chatRoomRepository.findById(roomId)
+                .orElseThrow(ExistsChatRoomException::new);
+
+        List<Long> messageIds = chatMessageRepository.findByChatRoom(chatRoom, pageable)
+                .getContent().stream().map(ChatMessage::getId).toList();
 
         messageIds.forEach(id -> {
-            Optional<Notification> notification = notificationRepository.findUnreadChatNotification(id);
+            Optional<Notification> notification = notificationRepository.findUnreadChatNotification(member, id);
             if (notification.isPresent()) {
                 notification.get().markAsRead();
             }

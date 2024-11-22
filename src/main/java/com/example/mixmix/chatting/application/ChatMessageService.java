@@ -65,7 +65,6 @@ public class ChatMessageService {
                 .currentPage(messagePage.getNumber())
                 .build();
 
-        notificationService.markAllChatRead(messagePage);
         return ChatMessageResList.of(messageDtos, pageInfoResDto);
     }
 }
