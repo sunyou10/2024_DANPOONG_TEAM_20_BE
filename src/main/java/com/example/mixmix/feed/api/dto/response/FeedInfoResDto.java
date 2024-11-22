@@ -2,8 +2,6 @@ package com.example.mixmix.feed.api.dto.response;
 
 import com.example.mixmix.feed.domain.Feed;
 import com.example.mixmix.feed.domain.FeedType;
-import com.example.mixmix.s3.application.AwsS3Service;
-import com.example.mixmix.s3.util.S3Util;
 import java.time.LocalDateTime;
 import lombok.Builder;
 
@@ -18,11 +16,10 @@ public record FeedInfoResDto(
         Long feedId,
         LocalDateTime createdAt
 ) {
-    public static FeedInfoResDto of(Feed feed, S3Util s3Util) {
-        String fileUrl = s3Util.getFileUrl(feed.getFeedImage());
+    public static FeedInfoResDto of(Feed feed, String feedImage) {
 
         return FeedInfoResDto.builder()
-                .feedImage(fileUrl)
+                .feedImage(feedImage)
                 .title(feed.getTitle())
                 .contents(feed.getContents())
                 .hashTags(feed.getHashTags())
