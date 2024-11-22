@@ -47,11 +47,10 @@ public class Feed extends BaseEntity {
         this.member = member;
     }
 
-    public void update(String title, String contents, String hashTag, String picture) {
+    public void update(String title, String contents, String hashTag) {
         this.title = title;
         this.contents = contents;
         this.hashTags = hashTag;
-        this.feedImage = picture;
     }
 
     public void delete() {

@@ -7,11 +7,15 @@ import com.example.mixmix.feed.api.dto.response.FeedSaveInfoResDto;
 import com.example.mixmix.feed.application.FeedService;
 import com.example.mixmix.global.annotation.CurrentUserEmail;
 import com.example.mixmix.global.template.RspTemplate;
+import com.example.mixmix.s3.application.AwsS3Service;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
@@ -22,7 +26,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
@@ -30,6 +36,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class FeedController {
 
     private final FeedService feedService;
+    private final AwsS3Service awsS3Service;
 
     @Operation(summary = "게시물(피드)을 생성합니다.", description = "게시물(피드)을 생성합니다.")
     @ApiResponses(value = {
@@ -40,8 +47,19 @@ public class FeedController {
     })
     @PostMapping
     public RspTemplate<FeedSaveInfoResDto> save(@CurrentUserEmail String email,
-                                                @RequestBody FeedSaveReqDto feedSaveReqDto) {
-        return new RspTemplate<>(HttpStatus.CREATED, "피드 생성", feedService.save(email, feedSaveReqDto));
+                                                @RequestPart("feedSaveReqDto") String feedSaveReqDtoJson,
+                                                @RequestPart("feedImage") List<MultipartFile> feedImage) {
+        List<String> imageUrls = awsS3Service.uploadFile(feedImage);
+        ObjectMapper objectMapper = new ObjectMapper();
+        FeedSaveReqDto feedSaveReqDto;
+
+        try {
+            feedSaveReqDto = objectMapper.readValue(feedSaveReqDtoJson, FeedSaveReqDto.class);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("JSON 파싱 오류: " + e.getMessage());
+        }
+
+        return new RspTemplate<>(HttpStatus.CREATED, "피드 생성", feedService.save(email, feedSaveReqDto, imageUrls));
     }
 
     @Operation(summary = "게시물(피드)을 개별 조회합니다.", description = "게시물(피드)을 개별 조회합니다.")
