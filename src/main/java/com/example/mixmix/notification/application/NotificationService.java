@@ -1,5 +1,7 @@
 package com.example.mixmix.notification.application;
 
+import com.example.mixmix.chatting.domain.ChatMessage;
+import com.example.mixmix.chatting.domain.repository.ChatMessageRepository;
 import com.example.mixmix.feed.domain.Feed;
 import com.example.mixmix.feed.domain.repository.FeedRepository;
 import com.example.mixmix.feed.exception.FeedNotFoundException;
@@ -16,6 +18,7 @@ import com.example.mixmix.notification.domain.repository.NotificationRepository;
 import com.example.mixmix.notification.util.NotificationPayload;
 import com.example.mixmix.notification.util.SseEmitterManager;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,6 +34,7 @@ public class NotificationService {
     private final NotificationRepository notificationRepository;
     private final MemberRepository memberRepository;
     private final FeedRepository feedRepository;
+    private final ChatMessageRepository chatMessageRepository;
     private final SseEmitterManager sseEmitterManager;
 
     public SseEmitter createEmitter(String email){
@@ -90,6 +94,28 @@ public class NotificationService {
         List<Notification> notifications = notificationRepository.findAllByReceiver(member);
 
         notifications.forEach(Notification::markAsRead);
+    }
+
+    @Transactional
+    public void markNotificationsRead(String email, Type type) {
+        Member member = findByEmail(email);
+        List<Notification> notifications = notificationRepository.findAllByReceiverAndType(member, type);
+
+        notifications.forEach(Notification::markAsRead);
+    }
+
+    @Transactional
+    public void markAllChatRead(Page<ChatMessage> chatMessages) {
+        List<Long> messageIds = chatMessages.getContent().stream()
+                .map(ChatMessage::getId)
+                .toList();
+
+        messageIds.forEach(id -> {
+            Optional<Notification> notification = notificationRepository.findUnreadChatNotification(id);
+            if (notification.isPresent()) {
+                notification.get().markAsRead();
+            }
+        });
     }
 
     public boolean hasUnreadNotifications(String email) {
