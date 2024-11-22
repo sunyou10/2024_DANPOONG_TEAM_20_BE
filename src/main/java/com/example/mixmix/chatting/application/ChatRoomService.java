@@ -3,13 +3,17 @@ package com.example.mixmix.chatting.application;
 import com.example.mixmix.chatting.api.dto.request.ChatRoomReqDto;
 import com.example.mixmix.chatting.api.dto.response.ChatRoomResList;
 import com.example.mixmix.chatting.api.dto.response.ChatRoomResDto;
+import com.example.mixmix.chatting.domain.ChatMessage;
 import com.example.mixmix.chatting.domain.ChatRoom;
+import com.example.mixmix.chatting.domain.repository.ChatMessageRepository;
 import com.example.mixmix.chatting.domain.repository.ChatRoomRepository;
 import com.example.mixmix.global.dto.PageInfoResDto;
 import com.example.mixmix.member.domain.Member;
 import com.example.mixmix.member.domain.repository.MemberRepository;
 import com.example.mixmix.member.exception.MemberNotFoundException;
 import java.util.List;
+import java.util.Optional;
+import com.example.mixmix.notification.domain.repository.NotificationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,6 +25,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class ChatRoomService {
 
     private final ChatRoomRepository chatRoomRepository;
+    private final ChatMessageRepository chatMessageRepository;
+    private final NotificationRepository notificationRepository;
     private final MemberRepository memberRepository;
 
     @Transactional
@@ -59,6 +65,8 @@ public class ChatRoomService {
                         .fromMemberId(chatRoom.getFromMember().getId())
                         .toMemberId(chatRoom.getToMember().getId())
                         .loginUserName(member.getName())
+                        .recentMessage(getRecentMessage(chatRoom))
+                        .unreadNotification(notificationRepository.countUnreadChatNotifications(member, chatRoom))
                         .build()
                 )
                 .toList();
@@ -70,5 +78,13 @@ public class ChatRoomService {
                 .build();
 
         return ChatRoomResList.of(chatRoomResDtos, pageInfoResDto);
+    }
+
+    private String getRecentMessage(ChatRoom chatRoom) {
+        Optional<ChatMessage> chatMessage = chatMessageRepository.findFirstByChatRoomOrderByTimestampDesc(chatRoom);
+        if (chatMessage.isPresent()) {
+            return chatMessage.get().getContent();
+        }
+        return null;
     }
 }
