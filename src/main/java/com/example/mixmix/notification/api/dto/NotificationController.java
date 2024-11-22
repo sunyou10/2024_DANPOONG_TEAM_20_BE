@@ -48,10 +48,12 @@ public class NotificationController {
 
         if (type == null) {
             response = notificationService.findAllNotifications(email);
+            notificationService.markNotificationsRead(email, Type.STREAK);
+            notificationService.markNotificationsRead(email, Type.COMMENT);
         } else {
             response = notificationService.findNotificationsByType(email, type);
+            notificationService.markNotificationsRead(email, type);
         }
-        notificationService.markAllNotificationsRead(email);
 
         return new RspTemplate<>(HttpStatus.OK, "알림 조회 성공", response);
     }

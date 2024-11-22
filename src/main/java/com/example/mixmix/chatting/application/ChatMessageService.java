@@ -8,6 +8,9 @@ import com.example.mixmix.chatting.domain.repository.ChatMessageRepository;
 import com.example.mixmix.chatting.domain.repository.ChatRoomRepository;
 import com.example.mixmix.chatting.exception.ExistsChatRoomException;
 import com.example.mixmix.global.dto.PageInfoResDto;
+import com.example.mixmix.member.domain.Member;
+import com.example.mixmix.notification.application.NotificationService;
+import com.example.mixmix.notification.domain.Type;
 import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -22,6 +25,8 @@ public class ChatMessageService {
 
     private final ChatMessageRepository chatMessageRepository;
     private final ChatRoomRepository chatRoomRepository;
+    private final NotificationService notificationService;
+    private static final String CHAT_NOTIFICATION_MESSAGE = "새로운 메시지가 있습니다.";
 
     @Transactional
     public void saveMessage(String roomId, String sender, String content) {
@@ -33,7 +38,15 @@ public class ChatMessageService {
         chatMessage.setContent(content);
         chatMessage.setTimestamp(LocalDateTime.now());
 
-        chatMessageRepository.save(chatMessage);
+        ChatMessage savedChatMessage = chatMessageRepository.save(chatMessage);
+
+        Member member;
+        if (!chatRoom.getFromMember().getName().equals(sender)) {
+            member = chatRoom.getFromMember();
+        } else {
+            member = chatRoom.getToMember();
+        }
+        notificationService.sendNotification(member, Type.CHAT, CHAT_NOTIFICATION_MESSAGE, savedChatMessage.getId());
     }
 
     public ChatMessageResList findChatMessages(Long roomId, Pageable pageable) {
@@ -52,6 +65,7 @@ public class ChatMessageService {
                 .currentPage(messagePage.getNumber())
                 .build();
 
+        notificationService.markAllChatRead(messagePage);
         return ChatMessageResList.of(messageDtos, pageInfoResDto);
     }
 }
