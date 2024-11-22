@@ -42,7 +42,8 @@ public class ChatRoomService {
                 savedChatRoom.getRoomName(),
                 frommember.getId(),
                 toMember.getId(),
-                frommember.getName());
+                frommember.getName(),
+                null, 0);
     }
 
     public ChatRoomResList getChatRooms(String email, Pageable pageable) {

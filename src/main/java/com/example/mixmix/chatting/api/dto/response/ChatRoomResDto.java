@@ -8,19 +8,25 @@ public record ChatRoomResDto(
         String name,
         Long fromMemberId,
         Long toMemberId,
-        String loginUserName
+        String loginUserName,
+        String recentMessage,
+        Integer unreadNotification
 ) {
     public static ChatRoomResDto from(Long roomId,
                                       String name,
                                       Long fromMemberId,
                                       Long toMemberId,
-                                      String loginUserName) {
+                                      String loginUserName,
+                                      String recentMessage,
+                                      Integer unreadNotification) {
         return ChatRoomResDto.builder()
                 .roomId(roomId)
                 .name(name)
                 .fromMemberId(fromMemberId)
                 .toMemberId(toMemberId)
                 .loginUserName(loginUserName)
+                .recentMessage(recentMessage)
+                .unreadNotification(unreadNotification)
                 .build();
     }
 }
