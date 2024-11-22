@@ -4,6 +4,7 @@ import com.example.mixmix.feed.api.dto.response.FeedInfoResDto;
 import com.example.mixmix.feed.domain.FeedType;
 import com.example.mixmix.feed.domain.QFeed;
 import com.example.mixmix.global.entity.Status;
+import com.example.mixmix.s3.util.S3Util;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -21,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class FeedCustomRepositoryImpl implements FeedCustomRepository {
 
     private final JPAQueryFactory queryFactory;
+    private final S3Util s3Util;
 
     @Override
     public Page<FeedInfoResDto> findAllByFeedType(String keyword, String nationality, Pageable pageable) {
@@ -54,15 +56,28 @@ public class FeedCustomRepositoryImpl implements FeedCustomRepository {
                 .limit(pageable.getPageSize())
                 .fetch();
 
+        List<FeedInfoResDto> parsedContent = content.stream()
+                .map(feedInfoResDto -> FeedInfoResDto.builder()
+                        .feedImage(s3Util.getFileUrl(feedInfoResDto.feedImage()))
+                        .title(feedInfoResDto.title())
+                        .contents(feedInfoResDto.contents())
+                        .hashTags(feedInfoResDto.hashTags())
+                        .feedType(feedInfoResDto.feedType())
+                        .memberId(feedInfoResDto.memberId())
+                        .feedId(feedInfoResDto.feedId())
+                        .createdAt(feedInfoResDto.createdAt())
+                        .build()
+                )
+                .toList();
+
         long total = queryFactory
                 .select(feed.count())
                 .from(feed)
                 .where(condition)
                 .fetchOne();
 
-        return PageableExecutionUtils.getPage(content, pageable, () -> total);
+        return PageableExecutionUtils.getPage(parsedContent, pageable, () -> total);
     }
-
 
     @Override
     public long countStudyFeedsByMemberId(Long memberId) {

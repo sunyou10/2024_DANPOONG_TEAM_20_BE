@@ -45,6 +45,7 @@ public class MemberService {
         return nickname.replaceAll("\\s+", "");
     }
 
+    @Transactional
     @Scheduled(cron = "0 0 0 * * ?")
     public void resetStreakStatus() {
         LocalDateTime yesterday = LocalDateTime.now(ZoneId.of("Asia/Seoul")).minusDays(1);

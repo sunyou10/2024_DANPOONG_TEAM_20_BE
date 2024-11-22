@@ -12,6 +12,7 @@ import com.example.mixmix.member.domain.Member;
 import com.example.mixmix.member.domain.repository.MemberRepository;
 import com.example.mixmix.member.exception.MemberNotFoundException;
 import com.example.mixmix.s3.application.AwsS3Service;
+import com.example.mixmix.s3.util.S3Util;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -27,6 +28,7 @@ public class FeedService {
     private final MemberRepository memberRepository;
     private final FeedRepository feedRepository;
     private final AwsS3Service awsS3Service;
+    private final S3Util s3Util;
 
     // 피드 생성
     @Transactional
@@ -43,18 +45,17 @@ public class FeedService {
     public FeedInfoResDto findById(Long feedId) {
         Feed feed = feedRepository.findById(feedId).orElseThrow(FeedNotFoundException::new);
 
-        String imageUrl = awsS3Service.getFileUrl(feed.getFeedImage());
-
-        return FeedInfoResDto.of(feed, imageUrl);
+        return FeedInfoResDto.of(feed, s3Util);
     }
 
     // 피드 social/study 구분해서 전체 조회
     public FeedListResDto findAllByFeedType(String keyword, String nationality, Pageable pageable) {
-        Page<FeedInfoResDto> feedInfoResDtos = feedRepository.findAllByFeedType(keyword, nationality, pageable);
+        Page<FeedInfoResDto> feedPage = feedRepository.findAllByFeedType(keyword, nationality, pageable);
 
         return FeedListResDto.of(
-                feedInfoResDtos.getContent(),
-                PageInfoResDto.from(feedInfoResDtos));
+                feedPage.getContent(),
+                PageInfoResDto.from(feedPage)
+        );
     }
 
     // 게시물 수정
@@ -62,13 +63,11 @@ public class FeedService {
     public FeedInfoResDto update(Long feedId, FeedSaveReqDto feedSaveReqDto) {
         Feed feed = feedRepository.findById(feedId).orElseThrow(FeedNotFoundException::new);
 
-        String imageUrl = awsS3Service.getFileUrl(feed.getFeedImage());
-
         feed.update(feedSaveReqDto.title(),
                 feedSaveReqDto.contents(),
                 feedSaveReqDto.hashTags());
 
-        return FeedInfoResDto.of(feed, imageUrl);
+        return FeedInfoResDto.of(feed, s3Util);
     }
 
     // 게시물 삭제
