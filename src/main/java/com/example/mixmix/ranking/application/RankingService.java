@@ -15,8 +15,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
 @Transactional
+@RequiredArgsConstructor
 public class RankingService {
 
     private final RankingRepository rankingRepository;
@@ -28,7 +28,7 @@ public class RankingService {
                 .map(RankingInfoResDto::from)
                 .toList();
 
-        return RankingListResDto.of(rankingTop10List);
+        return RankingListResDto.from(rankingTop10List);
     }
 
     public RankingInfoResDto getRanking(Long memberId) {

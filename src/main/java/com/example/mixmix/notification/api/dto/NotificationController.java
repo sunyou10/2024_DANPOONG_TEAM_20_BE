@@ -68,6 +68,7 @@ public class NotificationController {
     @PatchMapping
     public RspTemplate<Void> markAllNotificationsAsRead(@CurrentUserEmail String email) {
         notificationService.markAllNotificationsRead(email);
+
         return new RspTemplate<>(HttpStatus.OK, "모든 알림을 읽음으로 처리했습니다.");
     }
 
@@ -81,6 +82,7 @@ public class NotificationController {
     @DeleteMapping("/disconnect")
     public RspTemplate<Void> disconnectNotification(@CurrentUserEmail String email) {
         notificationService.disconnectEmitter(email);
+
         return new RspTemplate<>(HttpStatus.OK, "연결 해제 성공");
     }
 }

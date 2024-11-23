@@ -32,4 +32,3 @@ public class RankingCustomRepositoryImpl implements RankingCustomRepository {
                 .fetch();
     }
 }
-

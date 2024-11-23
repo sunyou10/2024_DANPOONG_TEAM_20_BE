@@ -17,4 +17,3 @@ public class AppConfig {
         return new Random();
     }
 }
-

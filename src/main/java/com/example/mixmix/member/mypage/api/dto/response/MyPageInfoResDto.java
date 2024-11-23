@@ -18,9 +18,9 @@ public record MyPageInfoResDto(
         long socialCount,
         LocalDateTime lastStreakUpdate,
         boolean isStreakUpdated,
-        boolean unreadNotifiication
+        boolean unreadNotification
 ) {
-    public static MyPageInfoResDto from(Member member, long studyCount, long socialCount, boolean unreadNotifiication) {
+    public static MyPageInfoResDto from(Member member, long studyCount, long socialCount, boolean unreadNotification) {
         return MyPageInfoResDto.builder()
                 .introduction(member.getIntroduction())
                 .nationality(member.getNationality())
@@ -34,7 +34,7 @@ public record MyPageInfoResDto(
                 .socialCount(socialCount)
                 .lastStreakUpdate(member.getLastStreakUpdate())
                 .isStreakUpdated(member.isStreakUpdated())
-                .unreadNotifiication(unreadNotifiication)
+                .unreadNotification(unreadNotification)
                 .build();
     }
 }

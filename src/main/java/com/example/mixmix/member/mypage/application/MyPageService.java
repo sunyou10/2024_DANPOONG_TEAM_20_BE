@@ -29,6 +29,7 @@ public class MyPageService {
         Member member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
         long educationCount = feedRepository.countStudyFeedsByMemberId(member.getId());
         long socialCount = feedRepository.countSocialFeedsByMemberId(member.getId());
+
         return MyPageInfoResDto.from(member, educationCount, socialCount, unreadNotification);
     }
 }
