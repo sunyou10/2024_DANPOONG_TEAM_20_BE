@@ -55,9 +55,9 @@ public class RankingService {
     public void updateRankings() {
         List<Ranking> sortedRankingList = rankingRepository.findAllRankingOrdered();
 
-        Integer rank = 1;
+        int rank = 1;
         for (Ranking ranking : sortedRankingList) {
-            ranking.updateRank(rank);
+            ranking.updateRank(rank++);
         }
 
         rankingRepository.saveAll(sortedRankingList);
