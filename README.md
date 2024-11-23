@@ -1,7 +1,7 @@
 <h1 align = "center"> MixMix </h1>
 <p align = "center">유학생을 연결하는 커뮤니티 플랫폼</p>
 
-<img src = "https://github.com/user-attachments/assets/877504bd-c4ba-41ba-b63d-52723ccb7529" width="1920"/>
+<img src = "https://github.com/user-attachments/assets/e52fb352-7751-4a4f-9579-4a8ee9f170e5" width="1920"/>
 
 <br/>
 <br/>
@@ -50,6 +50,7 @@ MixMix 라는 이름처럼, 다양한 국적의 유학생들이 언어의 장벽
 ### Frontend
 ![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
 ![javascript](https://img.shields.io/badge/javascript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=000000)
+![axios](https://img.shields.io/badge/axios-5A29E4?style=for-the-badge&logo=axios&logoColor=FFFFFF)
 
 ### Backend
 ![SpringBoot](https://img.shields.io/badge/springboot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white)
@@ -79,5 +80,5 @@ MixMix 라는 이름처럼, 다양한 국적의 유학생들이 언어의 장벽
 ## ☁️ 팀원 구성
 | **최인호** | **차서윤** | **김지원** | **최도현** | **천현주** | **김민상** |
 | :---: | :---: | :---: | :---: | :---: | :---: |
-| <img src="https://github.com/user-attachments/assets/877504bd-c4ba-41ba-b63d-52723ccb7529" width="150"> | <img src="https://github.com/user-attachments/assets/877504bd-c4ba-41ba-b63d-52723ccb7529" width="150"> | <img src="https://github.com/user-attachments/assets/877504bd-c4ba-41ba-b63d-52723ccb7529" width="150"> | <img src="https://github.com/user-attachments/assets/877504bd-c4ba-41ba-b63d-52723ccb7529" width="150"> | <img src="https://github.com/user-attachments/assets/877504bd-c4ba-41ba-b63d-52723ccb7529" width="150"> | <img src="https://github.com/user-attachments/assets/877504bd-c4ba-41ba-b63d-52723ccb7529" width="150"> |
+| <img src="https://avatars.githubusercontent.com/u/129029251?v=4" width="150"> | <img src="https://avatars.githubusercontent.com/u/145275007?v=4" width="150"> | <img src="https://avatars.githubusercontent.com/u/130336930?v=4" width="150"> | <img src="https://avatars.githubusercontent.com/u/74049556?v=4" width="150"> | <img src="https://avatars.githubusercontent.com/u/141122644?v=4" width="150"> | <img src="https://avatars.githubusercontent.com/u/176256675?v=4" width="150"> |
 | BE | BE | FE | FE | Designer | PM |

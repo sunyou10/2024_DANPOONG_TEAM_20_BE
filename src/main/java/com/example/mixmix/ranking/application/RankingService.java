@@ -8,14 +8,14 @@ import com.example.mixmix.ranking.api.dto.response.RankingInfoResDto;
 import com.example.mixmix.ranking.api.dto.response.RankingListResDto;
 import com.example.mixmix.ranking.domain.Ranking;
 import com.example.mixmix.ranking.domain.repository.RankingRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class RankingService {
 
@@ -39,6 +39,7 @@ public class RankingService {
         return RankingInfoResDto.from(ranking);
     }
 
+    @Transactional
     public void createRanking(Member member) {
         Ranking ranking = Ranking.builder()
                 .member(member)
@@ -49,6 +50,7 @@ public class RankingService {
         rankingRepository.save(ranking);
     }
 
+    @Transactional
     @Scheduled(fixedRate = 300000)
     public void updateRankings() {
         List<Ranking> sortedRankingList = rankingRepository.findAllRankingOrdered();

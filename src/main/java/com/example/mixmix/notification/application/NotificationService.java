@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class NotificationService {
     private static final String STREAK_NOTIFICATION_MESSAGE = "오늘의 도전을 완료하고 새로운 연결을 만들어보세요! \uD83C\uDF0F";
@@ -60,7 +61,6 @@ public class NotificationService {
         sseEmitterManager.sendNotification(member.getId(), createPayload(savedNotification));
     }
 
-    @Transactional(readOnly = true)
     public NotificationListResDto findAllNotifications(String email) {
         Member member = findByEmail(email);
         List<? extends NotificationInfoResDto> notifications = notificationRepository.findAllByReceiver(member)
@@ -78,7 +78,6 @@ public class NotificationService {
         return NotificationListResDto.of(notifications);
     }
 
-    @Transactional(readOnly = true)
     public NotificationListResDto findNotificationsByType(String email, Type type) {
         Member member = findByEmail(email);
         List<? extends NotificationInfoResDto> notifications;
@@ -131,6 +130,7 @@ public class NotificationService {
         return notificationRepository.existsByReceiverAndIsReadFalse(member);
     }
 
+    @Transactional
     @Scheduled(cron = "0 00 18 * * ?")
     public void sendStreakNotification() {
         List<Member> members = memberRepository.findAllByIsStreakUpdatedFalse();
