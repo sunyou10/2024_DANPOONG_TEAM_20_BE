@@ -52,6 +52,7 @@ public class FeedCustomRepositoryImpl implements FeedCustomRepository {
                 ))
                 .from(feed)
                 .where(condition)
+                .orderBy(feed.createdAt.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -78,6 +79,7 @@ public class FeedCustomRepositoryImpl implements FeedCustomRepository {
 
         return PageableExecutionUtils.getPage(parsedContent, pageable, () -> total);
     }
+
 
     @Override
     public long countStudyFeedsByMemberId(Long memberId) {
