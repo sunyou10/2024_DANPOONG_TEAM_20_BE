@@ -43,6 +43,7 @@ MixMix 라는 이름처럼, 다양한 국적의 유학생들이 언어의 장벽
 <br/>
 
 ## ☁️ 시스템 아키텍처
+![KakaoTalk_Photo_2024-11-23-17-44-21](https://github.com/user-attachments/assets/b2cc9cec-2c5d-45b4-8a92-fae8f0201e95)
 
 <br/>
 
