@@ -42,7 +42,6 @@ public class FeedService {
     // 피드 개별 조회
     public FeedInfoResDto findById(Long feedId) {
         Feed feed = feedRepository.findById(feedId).orElseThrow(FeedNotFoundException::new);
-
         String imageUrl = awsS3Service.getFileUrl(feed.getFeedImage());
 
         return FeedInfoResDto.of(feed, imageUrl);
@@ -50,18 +49,18 @@ public class FeedService {
 
     // 피드 social/study 구분해서 전체 조회
     public FeedListResDto findAllByFeedType(String keyword, String nationality, Pageable pageable) {
-        Page<FeedInfoResDto> feedInfoResDtos = feedRepository.findAllByFeedType(keyword, nationality, pageable);
+        Page<FeedInfoResDto> feedPage = feedRepository.findAllByFeedType(keyword, nationality, pageable);
 
         return FeedListResDto.of(
-                feedInfoResDtos.getContent(),
-                PageInfoResDto.from(feedInfoResDtos));
+                feedPage.getContent(),
+                PageInfoResDto.from(feedPage)
+        );
     }
 
     // 게시물 수정
     @Transactional
     public FeedInfoResDto update(Long feedId, FeedSaveReqDto feedSaveReqDto) {
         Feed feed = feedRepository.findById(feedId).orElseThrow(FeedNotFoundException::new);
-
         String imageUrl = awsS3Service.getFileUrl(feed.getFeedImage());
 
         feed.update(feedSaveReqDto.title(),

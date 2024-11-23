@@ -2,7 +2,6 @@ package com.example.mixmix.feed.api.dto.response;
 
 import com.example.mixmix.feed.domain.Feed;
 import com.example.mixmix.feed.domain.FeedType;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import lombok.Builder;
 
@@ -17,9 +16,10 @@ public record FeedInfoResDto(
         Long feedId,
         LocalDateTime createdAt
 ) {
-    public static FeedInfoResDto of(Feed feed, String fileUrl) {
+    public static FeedInfoResDto of(Feed feed, String feedImage) {
+
         return FeedInfoResDto.builder()
-                .feedImage(fileUrl)
+                .feedImage(feedImage)
                 .title(feed.getTitle())
                 .contents(feed.getContents())
                 .hashTags(feed.getHashTags())

@@ -4,6 +4,7 @@ import com.example.mixmix.feed.api.dto.response.FeedInfoResDto;
 import com.example.mixmix.feed.domain.FeedType;
 import com.example.mixmix.feed.domain.QFeed;
 import com.example.mixmix.global.entity.Status;
+import com.example.mixmix.s3.application.AwsS3Service;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -21,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class FeedCustomRepositoryImpl implements FeedCustomRepository {
 
     private final JPAQueryFactory queryFactory;
+    private final AwsS3Service awsS3Service;
 
     @Override
     public Page<FeedInfoResDto> findAllByFeedType(String keyword, String nationality, Pageable pageable) {
@@ -50,9 +52,24 @@ public class FeedCustomRepositoryImpl implements FeedCustomRepository {
                 ))
                 .from(feed)
                 .where(condition)
+                .orderBy(feed.createdAt.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
+
+        List<FeedInfoResDto> parsedContent = content.stream()
+                .map(feedInfoResDto -> FeedInfoResDto.builder()
+                        .feedImage(awsS3Service.getFileUrl(feedInfoResDto.feedImage()))
+                        .title(feedInfoResDto.title())
+                        .contents(feedInfoResDto.contents())
+                        .hashTags(feedInfoResDto.hashTags())
+                        .feedType(feedInfoResDto.feedType())
+                        .memberId(feedInfoResDto.memberId())
+                        .feedId(feedInfoResDto.feedId())
+                        .createdAt(feedInfoResDto.createdAt())
+                        .build()
+                )
+                .toList();
 
         long total = queryFactory
                 .select(feed.count())
@@ -60,7 +77,7 @@ public class FeedCustomRepositoryImpl implements FeedCustomRepository {
                 .where(condition)
                 .fetchOne();
 
-        return PageableExecutionUtils.getPage(content, pageable, () -> total);
+        return PageableExecutionUtils.getPage(parsedContent, pageable, () -> total);
     }
 
 

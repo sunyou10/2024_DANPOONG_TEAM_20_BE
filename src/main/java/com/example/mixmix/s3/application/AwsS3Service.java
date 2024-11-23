@@ -24,6 +24,9 @@ public class AwsS3Service {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
+    @Value("${cloud.aws.region.static}")
+    private String region;
+
     private final AmazonS3 amazonS3;
 
     public List<String> uploadFile(List<MultipartFile> multipartFiles){
@@ -61,13 +64,12 @@ public class AwsS3Service {
         }
     }
 
-
     public void deleteFile(String fileName){
         amazonS3.deleteObject(new DeleteObjectRequest(bucket, fileName));
         System.out.println(bucket);
     }
 
     public String getFileUrl(String fileName) {
-        return amazonS3.getUrl(bucket, fileName).toString();
+        return String.format("https://%s.s3.%s.amazonaws.com/%s", bucket, region, fileName);
     }
 }
