@@ -8,7 +8,7 @@ import java.util.List;
 public record RankingListResDto(
         List<RankingInfoResDto> rankingInfoResDto
 ) {
-    public static RankingListResDto of(List<RankingInfoResDto> rankingInfoResDtoList) {
+    public static RankingListResDto from(List<RankingInfoResDto> rankingInfoResDtoList) {
         return RankingListResDto.builder()
                 .rankingInfoResDto(rankingInfoResDtoList).build();
     }
