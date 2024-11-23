@@ -4,7 +4,6 @@ import com.example.mixmix.global.dto.PageInfoResDto;
 import java.util.List;
 import lombok.Builder;
 
-
 @Builder
 public record CommentListResDto(
         List<CommentInfoResDto> commentListResDtos,

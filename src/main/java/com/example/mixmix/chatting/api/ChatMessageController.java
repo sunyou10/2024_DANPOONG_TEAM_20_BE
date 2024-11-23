@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/chat-messages")
 @RequiredArgsConstructor
+@RequestMapping("/api/chat-messages")
 public class ChatMessageController {
 
     private final ChatMessageService chatMessageService;
@@ -29,6 +29,7 @@ public class ChatMessageController {
             @RequestParam(name = "size", defaultValue = "10") int size,
             @CurrentUserEmail String email) {
         notificationService.markChatRead(email, roomId, PageRequest.of(page, size));
+
         return new RspTemplate<>(HttpStatus.OK, "채팅 메시지 조회",
                 chatMessageService.findChatMessages(roomId, PageRequest.of(page, size)));
     }

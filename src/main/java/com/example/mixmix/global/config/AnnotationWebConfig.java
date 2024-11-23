@@ -18,4 +18,3 @@ public class AnnotationWebConfig implements WebMvcConfigurer {
         resolvers.add(currentUserEmailArgumentResolver);
     }
 }
-

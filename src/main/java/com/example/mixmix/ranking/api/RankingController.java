@@ -49,5 +49,4 @@ public class RankingController {
         return new RspTemplate<>(HttpStatus.OK, "해당 회원의 랭킹 조회 성공",
                 rankingService.getRanking(memberId));
     }
-
 }
